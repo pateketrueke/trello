@@ -1,0 +1,8 @@
+.git
+.env
+*.todo
+.DS_Store
+cache.json
+logs
+build
+node_modules

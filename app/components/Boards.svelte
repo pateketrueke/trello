@@ -1,17 +1,88 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, createEventDispatcher } from 'svelte';
   import { apiCall } from '../shared/client';
 
+  const dispatch = createEventDispatcher();
+
+  let boards = null;
+  let boardId = null;
+  let orgId = null;
   let orgs = [];
 
   onMount(async () => {
     const response = await apiCall('orgs');
     orgs = response.result;
   });
+
+  function sync() {
+    boards = apiCall(`boards/${orgId}`);
+  }
+
+  function rmBoard() {
+    if (!confirm('you sure?')) return; // eslint-disable-line
+    apiCall(`boards/${boardId}`, {
+      method: 'DELETE',
+    }).then(sync);
+  }
+
+  function addBoard() {
+    const name = prompt('board name?'); // eslint-disable-line
+    if (name) {
+      apiCall(`boards/${orgId}`, {
+        body: JSON.stringify({ name }),
+        method: 'PUT',
+      }).then(sync);
+    }
+  }
+
+  function handleOrg(e) {
+    orgId = e.target.value;
+    boardId = null;
+    sync();
+    dispatch('selection', { orgId });
+  }
+
+  function handleBoard(e) {
+    boardId = e.target.value;
+    dispatch('selection', { orgId, boardId });
+  }
 </script>
-<h3>Orgs</h3>
-<ul>
-  {#each orgs as org}
-    <li>{org.name}</li>
-  {/each}
-</ul>
+
+<fieldset>
+  <label>
+    <span>Organizations</span>
+    <select on:change={handleOrg}>
+      <option disabled selected>pick one</option>
+      {#each orgs as org}
+        <option value={org.id}>{org.name}</option>
+      {/each}
+    </select>
+  </label>
+  {#if boards}
+    <br />
+    <label>
+      {#await boards}
+        <span>Loading...</span>
+      {:then value}
+        {#if !value.result.length}
+          <span>No boards were found</span>
+        {:else}
+          <span>Boards</span>
+          <select on:change={handleBoard}>
+            <option disabled selected>pick one</option>
+            {#each value.result as board}
+              <option value={board.id}>{board.name}</option>
+            {/each}
+          </select>
+          {#if boardId}
+            <button on:click={rmBoard}>delete board</button>
+          {/if}
+        {/if}
+      {:catch e}
+        <span>{e.message}</span>
+      {/await}
+    </label>
+    <br />
+    <button on:click={addBoard}>add a new board</button>
+  {/if}
+</fieldset>

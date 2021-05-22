@@ -24,7 +24,11 @@ export function apiCall(uri, options = {}) {
     headers: {
       ...options.headers,
       'x-auth-token': token,
+      'content-type': 'application/json',
     },
     ...options,
-  }).then(resp => resp.json());
+  }).then(resp => resp.json())
+  .catch(e => {
+    throw new Error(`Failed to call /${uri}`);
+  });
 }

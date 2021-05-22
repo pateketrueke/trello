@@ -1,13 +1,13 @@
 const baseURL = 'https://trello.com';
 const apiURL = 'https://api.trello.com';
 
-async function api(ctx, route) {
+async function api(ctx, route, options) {
   const token = ctx.req_headers['x-auth-token'];
   const opts = `key=${process.env.TRELLO_API_KEY}&token=${token}`;
 
   let data;
   try {
-    data = await ctx.get_json(`${apiURL}/1/${route}/?${opts}`);
+    data = await ctx.get_json(`${apiURL}/1/${route}/?${opts}`, options);
   } catch (e) {
     ctx.resp_body = e.stack;
   }
@@ -26,7 +26,7 @@ module.exports = {
     ctx.resp_body = { status: 'ok' };
   },
   async auth(ctx) {
-    const permissions = process.env.TRELLO_API_PERMISSIONS || 'read';
+    const permissions = process.env.TRELLO_API_PERMISSIONS || 'read,write';
     const expires = process.env.TRELLO_TOKEN_EXPIRATION || '1day';
     const app = process.env.TRELLO_APP_NAME || 'MyTrello';
 
@@ -37,6 +37,21 @@ module.exports = {
     html = html.replace('<head>', `<head><base href="${baseURL}">`);
 
     ctx.resp_body = html;
+  },
+  async board(ctx) {
+    const result = await api(ctx, 'boards', {
+      method: 'POST',
+      query: {
+        name: ctx.body_params.name,
+        idOrganization: ctx.path_params.org_id,
+      },
+    });
+
+    ctx.resp_body = result;
+  },
+  async remove(ctx) {
+    await api(ctx, `boards/${ctx.path_params.board_id}`, { method: 'DELETE' });
+    ctx.resp_body = { status: 'ok' };
   },
   async orgs(ctx) {
     let result = [];
@@ -51,6 +66,35 @@ module.exports = {
         website: org.website,
         name: org.displayName,
         url: org.url,
+      }));
+    }
+
+    ctx.resp_body = { result };
+  },
+  async group(ctx) {
+    let result = [];
+    if (ctx.session.profile) {
+      result = await api(ctx, `boards/${ctx.path_params.board_id}/cards`);
+      result = result.map(org => ({
+        id: org.id,
+        url: org.url,
+        name: org.name,
+        closed: org.closed,
+        members: org.idMembers,
+        subscribed: org.subscribed,
+      }));
+    }
+
+    ctx.resp_body = { result };
+  },
+  async list(ctx) {
+    let result = [];
+    if (ctx.session.profile) {
+      result = await api(ctx, `organizations/${ctx.path_params.org_id}/boards`);
+      result = result.map(org => ({
+        id: org.id,
+        url: org.url,
+        name: org.name,
       }));
     }
 

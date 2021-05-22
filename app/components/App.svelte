@@ -1,10 +1,13 @@
 <script>
-  import { onMount } from 'svelte';
-
-  let resp = '';
-  onMount(async () => {
-    resp = await fetch('/api').then(x => x.text());
-  });
+  import { clearToken, loggedIn, session } from '../shared/state';
+  import Boards from './Boards.svelte';
 </script>
-<h1>It works.</h1>
-{@html resp}
+
+{#if $loggedIn}
+  <h1>Welcome {$session.fullname}</h1>
+  <button on:click={clearToken}>Log out</button>
+  <Boards />
+{:else}
+  <h1>Hello there</h1>
+  <a href="/api/login">log in</a>
+{/if}

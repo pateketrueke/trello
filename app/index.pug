@@ -1,0 +1,43 @@
+html
+  head
+    title Trello
+    style.
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
+      #app + * {
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background-color: white;
+        position: fixed;
+        z-index: 1100;
+      }
+      #app + * span {
+        position: relative;
+      }
+      #app + * span::after {
+        content: '';
+        width: 24px;
+        height: 24px;
+        bottom: -35px;
+        left: 0;
+        right: 0;
+        margin: auto;
+        position: absolute;
+        background-image: url('{@data from="../public/loader.gif"}');
+      }
+      #app:empty + * {
+        display: flex;
+      }
+  body
+    #app
+    div
+      span Loading app...
+    import(from='main.js')

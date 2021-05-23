@@ -1,8 +1,7 @@
 <script>
   import { clearToken, loggedIn, session } from '../shared/state';
-  import { apiCall } from '../shared/client';
   import Boards from './Boards.svelte';
-  import Cards from './Cards.svelte';
+  import CardLists from './CardLists.svelte';
 
   let boardId = null;
   function displayCards(e) {
@@ -15,7 +14,7 @@
   <button on:click={clearToken}>Log out</button>
   <Boards on:selection={displayCards} />
   {#if boardId}
-    <Cards {boardId} />
+    <CardLists {boardId} />
   {/if}
 {:else}
   <h1>Hello there</h1>

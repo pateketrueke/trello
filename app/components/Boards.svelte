@@ -6,6 +6,7 @@
 
   let boards = null;
   let boardId = null;
+  let boardName = '';
   let orgId = null;
   let orgs = [];
 
@@ -15,6 +16,7 @@
   });
 
   function sync() {
+    boardName = '';
     boardId = null;
     boards = apiCall(`boards/${orgId}`);
     dispatch('selection', { orgId, boardId });
@@ -28,13 +30,10 @@
   }
 
   function addBoard() {
-    const name = prompt('board name?'); // eslint-disable-line
-    if (name) {
-      apiCall(`boards/${orgId}`, {
-        body: JSON.stringify({ name }),
-        method: 'POST',
-      }).then(sync);
-    }
+    apiCall(`boards/${orgId}`, {
+      body: JSON.stringify({ name: boardName }),
+      method: 'POST',
+    }).then(sync);
   }
 
   function handleOrg(e) {
@@ -49,9 +48,10 @@
 </script>
 
 <fieldset>
-  <label>
+  <label for="org-id">
     <span>Organizations</span>
-    <select on:change={handleOrg}>
+    <!-- svelte-ignore a11y-no-onchange -->
+    <select id="org-id" on:change={handleOrg}>
       <option disabled selected>pick one</option>
       {#each orgs as org}
         <option value={org.id}>{org.name}</option>
@@ -60,7 +60,7 @@
   </label>
   {#if boards}
     <br />
-    <label>
+    <label for="board-id">
       {#await boards}
         <span>Loading...</span>
       {:then value}
@@ -68,7 +68,8 @@
           <span>No boards were found</span>
         {:else}
           <span>Boards</span>
-          <select on:change={handleBoard}>
+          <!-- svelte-ignore a11y-no-onchange -->
+          <select id="board-id" on:change={handleBoard}>
             <option disabled selected>pick one</option>
             {#each value.result as board}
               <option value={board.id}>{board.name}</option>
@@ -83,6 +84,7 @@
       {/await}
     </label>
     <br />
-    <button on:click={addBoard}>add a new board</button>
+    <input type="text" bind:value={boardName} />
+    <button on:click={addBoard} disabled={!boardName}>add a new board</button>
   {/if}
 </fieldset>

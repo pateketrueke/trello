@@ -4,16 +4,15 @@ import {
 } from './client';
 
 export const loggedIn = writable(getLocal('api_token', false));
-export const session = writable(getLocal('session', {}));
+export const session = writable(getLocal('user_session', {}));
 
 export function setToken(value) {
-  history.replaceState(null, '', '/');
   setLocal('api_token', value);
   apiCall('session', { method: 'POST' })
-    .then(({ result }) => {
-      setLocal('session', result);
+    .then(({ error, result }) => {
+      setLocal('user_session', result);
       session.set(result);
-      loggedIn.set(true);
+      loggedIn.set(!error);
     });
 }
 

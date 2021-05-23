@@ -1,0 +1,11 @@
+extend _layout
+
+block body
+  Section
+    Column(width='100%')
+      Text Your list "{{OBJECT_TYPE}}" was scrambled.
+    Column(width='100%')
+      Text {{TASK_NAME}}
+      Text {{TASK_DESCRIPTION}}
+      Text &mdash; {{USER_NAME}} deleted this task on {{DELETED_AT}}
+

@@ -1,5 +1,12 @@
+const path = require('path');
+const Mailor = require('mailor');
+
 const baseURL = 'https://trello.com';
 const apiURL = 'https://api.trello.com';
+
+const mailer = Mailor.buildMailer(path.resolve(__dirname, '../../build/mails'), {
+  maildev: ['test', 'development'].includes(process.env.NODE_ENV) || process.env.MAILDEV === 'YES',
+});
 
 async function api(ctx, route, options) {
   const token = ctx.req_headers['x-auth-token'];
@@ -17,6 +24,9 @@ async function api(ctx, route, options) {
 module.exports = {
   baseURL() {
     return baseURL;
+  },
+  sendMail() {
+    return mailer;
   },
   getAPI() {
     return api;

@@ -1,6 +1,6 @@
 dev:
-	@npm run dev & npm run watch
+	@npm run dev & npm run watch & npm run mailor
 
 clean:
 	@rm -rf build/*
-	@rm cache.json
+	@rm -f cache.json

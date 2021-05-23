@@ -49,9 +49,13 @@
     }).then(sync);
   }
 
-  function rmTask(taskId) {
+  function rmTask(taskInfo, listName) {
     if (!confirm('you sure?')) return; // eslint-disable-line
-    apiCall(`cards/${taskId}`, {
+    apiCall(`cards/${taskInfo.id}`, {
+      body: JSON.stringify({
+        task: taskInfo,
+        list: listName,
+      }),
       method: 'DELETE',
     }).then(sync);
   }
@@ -83,7 +87,7 @@
                 <span>{task.name}</span>
                 <br />
                 <button on:click={() => setTask(task)}>edit task</button>
-                <button on:click={() => rmTask(task.id)}>delete task</button>
+                <button on:click={() => rmTask(task, list.name)}>delete task</button>
               </li>
             {:else}
               <li>No tasks were found</li>

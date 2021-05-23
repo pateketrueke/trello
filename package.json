@@ -7,9 +7,11 @@
     "dev": "npm run build -- -w",
     "dist": "npm run build",
     "start": "node server.js",
+    "predev": "MAILOR_TASK=build npm run mailor",
     "check": "eslint *.js '{api,app}/**/*.{js,pug,svelte}'",
     "watch": "nodemon server.js --quiet --ignore cache.json --ignore build",
-    "build": "mortero app -P/api:3001/api/v1/ -dcpublic:. -ecss.less -I.gitignore"
+    "build": "mortero app -P/api:3001/api/v1/ -dcpublic:. -ecss.less -I.gitignore",
+    "mailor": "mailor ${MAILOR_TASK:-watch} api/mailings/templates -w api/mailings/partials -d build/mails"
   },
   "mortero": {
     "bundle": "**/main.js",
@@ -42,7 +44,8 @@
     "@grown/conn": "^0.0.31",
     "@grown/router": "^0.0.11",
     "@grown/session": "0.0.17",
-    "grown": "^1.1.40"
+    "grown": "^1.1.40",
+    "mailor": "^0.3.5"
   },
   "devDependencies": {
     "eslint": "^7.27.0",

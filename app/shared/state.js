@@ -10,7 +10,7 @@ export function setToken(value) {
   history.replaceState(null, '', '/');
   setLocal('api_token', value);
   apiCall('session', { method: 'POST' })
-    .then(result => {
+    .then(({ result }) => {
       setLocal('session', result);
       session.set(result);
       loggedIn.set(true);

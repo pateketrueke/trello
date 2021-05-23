@@ -15,7 +15,9 @@
   });
 
   function sync() {
+    boardId = null;
     boards = apiCall(`boards/${orgId}`);
+    dispatch('selection', { orgId, boardId });
   }
 
   function rmBoard() {
@@ -30,16 +32,14 @@
     if (name) {
       apiCall(`boards/${orgId}`, {
         body: JSON.stringify({ name }),
-        method: 'PUT',
+        method: 'POST',
       }).then(sync);
     }
   }
 
   function handleOrg(e) {
     orgId = e.target.value;
-    boardId = null;
     sync();
-    dispatch('selection', { orgId });
   }
 
   function handleBoard(e) {

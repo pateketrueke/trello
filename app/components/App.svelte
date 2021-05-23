@@ -4,12 +4,9 @@
   import Boards from './Boards.svelte';
   import Cards from './Cards.svelte';
 
-  let cards = null;
+  let boardId = null;
   function displayCards(e) {
-    cards = null;
-    if (e.detail.boardId) {
-      cards = apiCall(`cards/${e.detail.boardId}`);
-    }
+    boardId = e.detail.boardId;
   }
 </script>
 
@@ -17,14 +14,8 @@
   <h1>Welcome {$session.fullname}</h1>
   <button on:click={clearToken}>Log out</button>
   <Boards on:selection={displayCards} />
-  {#if cards}
-    {#await cards}
-      <span>Loading...</span>
-    {:then value}
-      <Cards cards={value.result} />
-    {:catch e}
-      <span>{e.message}</span>
-    {/await}
+  {#if boardId}
+    <Cards {boardId} />
   {/if}
 {:else}
   <h1>Hello there</h1>

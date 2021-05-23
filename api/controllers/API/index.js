@@ -15,13 +15,13 @@ async function api(ctx, route, options) {
 }
 
 module.exports = {
-  async token(ctx) {
+  async login(ctx) {
     const userdata = await api(ctx, 'members/me');
 
     ctx.put_session('profile', userdata);
     this.data(ctx);
   },
-  clear(ctx) {
+  logout(ctx) {
     ctx.delete_session('*');
     ctx.resp_body = { status: 'ok' };
   },
@@ -38,7 +38,76 @@ module.exports = {
 
     ctx.resp_body = html;
   },
-  async board(ctx) {
+  async groupedCards(ctx) {
+    let result = [];
+    if (ctx.session.profile) {
+      const cards = await api(ctx, `boards/${ctx.path_params.board_id}/cards`);
+      const lists = await api(ctx, `boards/${ctx.path_params.board_id}/lists`);
+      const groups = lists.reduce((memo, list) => {
+        memo[list.id] = {
+          id: list.id,
+          name: list.name,
+          closed: list.closed,
+          activities: [],
+        };
+        return memo;
+      }, {});
+
+      cards.forEach(card => {
+        groups[card.idList].activities.push({
+          id: card.id,
+          url: card.url,
+          name: card.name,
+          closed: card.closed,
+          members: card.idMembers,
+          subscribed: card.subscribed,
+        });
+      });
+
+      result = Object.values(groups);
+    }
+
+    ctx.resp_body = { result };
+  },
+  async createCard(ctx) {
+    const result = await api(ctx, 'cards', {
+      method: 'POST',
+      query: {
+        name: ctx.body_params.name,
+        idList: ctx.path_params.list_id,
+      },
+    });
+
+    ctx.resp_body = { result };
+  },
+  async updateCard(ctx) {
+    const result = await api(ctx, `cards/${ctx.path_params.card_id}`, {
+      method: 'PUT',
+      query: {
+        name: ctx.body_params.name,
+      },
+    });
+
+    ctx.resp_body = { result };
+  },
+  async removeCard(ctx) {
+    await api(ctx, `cards/${ctx.path_params.card_id}`, { method: 'DELETE' });
+    ctx.resp_body = { status: 'ok' };
+  },
+  async listBoards(ctx) {
+    let result = [];
+    if (ctx.session.profile) {
+      result = await api(ctx, `organizations/${ctx.path_params.org_id}/boards`);
+      result = result.map(board => ({
+        id: board.id,
+        url: board.url,
+        name: board.name,
+      }));
+    }
+
+    ctx.resp_body = { result };
+  },
+  async createBoard(ctx) {
     const result = await api(ctx, 'boards', {
       method: 'POST',
       query: {
@@ -47,9 +116,9 @@ module.exports = {
       },
     });
 
-    ctx.resp_body = result;
+    ctx.resp_body = { result };
   },
-  async remove(ctx) {
+  async removeBoard(ctx) {
     await api(ctx, `boards/${ctx.path_params.board_id}`, { method: 'DELETE' });
     ctx.resp_body = { status: 'ok' };
   },
@@ -71,35 +140,6 @@ module.exports = {
 
     ctx.resp_body = { result };
   },
-  async group(ctx) {
-    let result = [];
-    if (ctx.session.profile) {
-      result = await api(ctx, `boards/${ctx.path_params.board_id}/cards`);
-      result = result.map(org => ({
-        id: org.id,
-        url: org.url,
-        name: org.name,
-        closed: org.closed,
-        members: org.idMembers,
-        subscribed: org.subscribed,
-      }));
-    }
-
-    ctx.resp_body = { result };
-  },
-  async list(ctx) {
-    let result = [];
-    if (ctx.session.profile) {
-      result = await api(ctx, `organizations/${ctx.path_params.org_id}/boards`);
-      result = result.map(org => ({
-        id: org.id,
-        url: org.url,
-        name: org.name,
-      }));
-    }
-
-    ctx.resp_body = { result };
-  },
   data(ctx) {
     let result = null;
     if (ctx.session.profile) {
@@ -115,6 +155,6 @@ module.exports = {
       };
     }
 
-    ctx.resp_body = result;
+    ctx.resp_body = { result };
   },
 };

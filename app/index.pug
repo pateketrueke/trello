@@ -6,6 +6,7 @@ html
       body {
         margin: 0;
         height: 100%;
+        font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
       }
       #app + * {
         top: 0;
@@ -36,7 +37,11 @@ html
       #app:empty + * {
         display: flex;
       }
+    link(href='https://unpkg.com/basscss@8.0.2/css/basscss.min.css' rel='stylesheet')
+    import(from='home.css')
+
   body
+    import(from='sprites.svg')
     #app
     div
       span Loading app...

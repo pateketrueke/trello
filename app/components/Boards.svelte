@@ -47,44 +47,40 @@
   }
 </script>
 
-<fieldset>
-  <label for="org-id">
-    <span>Organizations</span>
-    <!-- svelte-ignore a11y-no-onchange -->
-    <select id="org-id" on:change={handleOrg}>
-      <option disabled selected>pick one</option>
-      {#each orgs as org}
-        <option value={org.id}>{org.name}</option>
-      {/each}
-    </select>
-  </label>
-  {#if boards}
-    <br />
-    <label for="board-id">
-      {#await boards}
-        <span>Loading...</span>
-      {:then value}
-        {#if !value.result.length}
-          <span>No boards were found</span>
-        {:else}
-          <span>Boards</span>
-          <!-- svelte-ignore a11y-no-onchange -->
-          <select id="board-id" on:change={handleBoard}>
-            <option disabled selected>pick one</option>
-            {#each value.result as board}
-              <option value={board.id}>{board.name}</option>
-            {/each}
-          </select>
-          {#if boardId}
-            <button on:click={rmBoard}>delete board</button>
-          {/if}
+<label for="org-id">
+  <span>Organizations</span>
+  <!-- svelte-ignore a11y-no-onchange -->
+  <select id="org-id" on:change={handleOrg}>
+    <option disabled selected>pick one</option>
+    {#each orgs as org}
+      <option value={org.id}>{org.name}</option>
+    {/each}
+  </select>
+</label>
+{#if boards}
+  <label for="board-id">
+    {#await boards}
+      <span>Loading...</span>
+    {:then value}
+      {#if !value.result.length}
+        <span>No boards were found</span>
+      {:else}
+        <span>Boards</span>
+        <!-- svelte-ignore a11y-no-onchange -->
+        <select id="board-id" on:change={handleBoard}>
+          <option disabled selected>pick one</option>
+          {#each value.result as board}
+            <option value={board.id}>{board.name}</option>
+          {/each}
+        </select>
+        {#if boardId}
+          <button on:click={rmBoard}>delete board</button>
         {/if}
-      {:catch e}
-        <span>{e.message}</span>
-      {/await}
-    </label>
-    <br />
-    <input type="text" bind:value={boardName} />
-    <button on:click={addBoard} disabled={!boardName}>add a new board</button>
-  {/if}
-</fieldset>
+      {/if}
+    {:catch e}
+      <span>{e.message}</span>
+    {/await}
+  </label>
+  <input type="text" bind:value={boardName} />
+  <button on:click={addBoard} disabled={!boardName}>add a new board</button>
+{/if}

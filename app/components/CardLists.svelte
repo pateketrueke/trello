@@ -73,36 +73,34 @@
   }
 </script>
 
-<table>
-  <tr>
-    {#await cards}
-      <td>Loading...</td>
-    {:then groups}
-      {#each groups as list}
-        <td>
-          <h4>{list.name}</h4>
-          <ul>
-            {#each list.activities as task}
-              <li>
-                <span>{task.name}</span>
-                <br />
-                <button on:click={() => setTask(task)}>edit task</button>
-                <button on:click={() => rmTask(task, list.name)}>delete task</button>
-              </li>
-            {:else}
-              <li>No tasks were found</li>
-            {/each}
-          </ul>
-          <button on:click={() => addTask(list.id)}>add a new task</button>
-        </td>
-      {:else}
-        <td>No lists were found</td>
-      {/each}
-    {:catch e}
-      <td>{e.message}</td>
-    {/await}
-  </tr>
-</table>
+<ul>
+  {#await cards}
+    <li>Loading...</li>
+  {:then groups}
+    {#each groups as list}
+      <li>
+        <h3>{list.name}</h3>
+        <ul>
+          {#each list.activities as task}
+            <li>
+              <span>{task.name}</span>
+              <br />
+              <button on:click={() => setTask(task)}>edit task</button>
+              <button on:click={() => rmTask(task, list.name)}>delete task</button>
+            </li>
+          {:else}
+            <li>No tasks were found</li>
+          {/each}
+        </ul>
+        <button on:click={() => addTask(list.id)}>add a new task</button>
+      </li>
+    {:else}
+      <li>No lists were found</li>
+    {/each}
+  {:catch e}
+    <li>{e.message}</li>
+  {/await}
+</ul>
 
 {#await saving}
   <span>Saving...</span>
@@ -112,12 +110,10 @@
       <span>name</span>
       <input id="card-name" type="text" bind:value={card.name} />
     </label>
-    <br />
     <label for="card-description">
       <span>description</span>
       <textarea id="card-description" bind:value={card.description}></textarea>
     </label>
-    <br />
     <label for="card-due-date">
       <span>dueDate</span>
       <input id="card-due-date" type="date" bind:value={card.dueDate} />
@@ -127,7 +123,6 @@
       <span>Members</span>
       <MemberList id="card-members" data={users} bind:value={card.members} />
     </label>
-    <br />
     <button on:click={save} disabled={!isValid}>save task</button>
     <button on:click={cancel}>cancel</button>
   {/if}

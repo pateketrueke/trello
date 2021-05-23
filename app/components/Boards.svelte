@@ -1,24 +1,21 @@
 <script>
   import { onMount, createEventDispatcher } from 'svelte';
-  import { apiCall } from '../shared/client';
+  import { apiCall, getLocal, setLocal } from '../shared/utils';
 
   const dispatch = createEventDispatcher();
 
   let boards = null;
-  let boardId = null;
+  let boardId = getLocal('board_id');
   let boardName = '';
-  let orgId = null;
+  let orgId = getLocal('org_id');
   let orgs = [];
 
-  onMount(async () => {
-    const response = await apiCall('orgs');
-    orgs = response.result;
-  });
-
-  function sync() {
+  function sync(keep) {
     boardName = '';
-    boardId = null;
     boards = apiCall(`boards/${orgId}`);
+    if (!keep) {
+      setLocal('board_id', boardId = null);
+    }
     dispatch('selection', { orgId, boardId });
   }
 
@@ -37,20 +34,26 @@
   }
 
   function handleOrg(e) {
-    orgId = e.target.value;
+    setLocal('org_id', orgId = e.target.value);
     sync();
   }
 
   function handleBoard(e) {
-    boardId = e.target.value;
+    setLocal('board_id', boardId = e.target.value);
     dispatch('selection', { orgId, boardId });
   }
+
+  onMount(async () => {
+    const response = await apiCall('orgs');
+    orgs = response.result;
+    if (orgId) sync(true);
+  });
 </script>
 
 <label for="org-id">
   <span>Organizations</span>
   <!-- svelte-ignore a11y-no-onchange -->
-  <select id="org-id" on:change={handleOrg}>
+  <select id="org-id" on:change={handleOrg} value={orgId}>
     <option disabled selected>pick one</option>
     {#each orgs as org}
       <option value={org.id}>{org.name}</option>
@@ -67,7 +70,7 @@
       {:else}
         <span>Boards</span>
         <!-- svelte-ignore a11y-no-onchange -->
-        <select id="board-id" on:change={handleBoard}>
+        <select id="board-id" on:change={handleBoard} value={boardId}>
           <option disabled selected>pick one</option>
           {#each value.result as board}
             <option value={board.id}>{board.name}</option>

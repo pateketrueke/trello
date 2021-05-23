@@ -1,5 +1,5 @@
 <script>
-  import { apiCall } from '../shared/client';
+  import { apiCall } from '../shared/utils';
   import MemberList from './MemberList.svelte';
 
   export let boardId = null;

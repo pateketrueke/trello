@@ -1,7 +1,7 @@
 import { readable, writable } from 'svelte/store';
 import {
   apiCall, getLocal, setLocal,
-} from './client';
+} from './utils';
 
 export const loggedIn = writable(getLocal('api_token', false));
 export const session = writable(getLocal('user_session', {}));

@@ -1,6 +1,7 @@
 <script>
   import { onMount, createEventDispatcher } from 'svelte';
   import { apiCall, getLocal, setLocal } from '../shared/utils';
+  import SvgIcon from './SvgIcon.svelte';
 
   const dispatch = createEventDispatcher();
 
@@ -77,7 +78,9 @@
           {/each}
         </select>
         {#if boardId}
-          <button on:click={rmBoard}>delete board</button>
+          <button on:click={rmBoard}>
+            <SvgIcon name="trash" />
+          </button>
         {/if}
       {/if}
     {:catch e}
@@ -85,5 +88,8 @@
     {/await}
   </label>
   <input type="text" bind:value={boardName} />
-  <button on:click={addBoard} disabled={!boardName}>add a new board</button>
+  <button on:click={addBoard} disabled={!boardName}>
+    <SvgIcon name="add" />
+    <span>add a new board</span>
+  </button>
 {/if}

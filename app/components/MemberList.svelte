@@ -1,4 +1,6 @@
 <script>
+  import SvgIcon from './SvgIcon.svelte';
+
   export let value = [];
   export let data = [];
   export let id = null;
@@ -24,7 +26,10 @@
   }
 </script>
 
-<input type="text" {id} on:keyup={search} placeholder="Search for names..." />
+<label for={id} role="search">
+  <SvgIcon name="search" />
+  <input type="search" {id} on:keyup={search} placeholder="Search for names..." />
+</label>
 
 <ul>
   {#each filteredData as item}

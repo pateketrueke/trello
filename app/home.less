@@ -1,19 +1,129 @@
+@silver: #d8e2dc;
+@gray: #219ebc;
+@black: #264653;
+html {
+  font-size: 1.05rem;
+}
 *,
 *::after,
 *::before {
   margin: 0;
   padding: 0;
-}
-ul {
-  list-style-type: none;
+  box-sizing: border-box;
 }
 #app {
   padding: 1rem;
-
+  *,
+  *::after,
+  *::before {
+    margin: 0;
+    padding: 0;
+    font-size: 1.05rem;
+  }
+  ul {
+    list-style-type: none;
+  }
+  button {
+    background-color: transparent;
+    cursor: pointer;
+    transition: border-color .2s;
+    &[disabled] svg {
+      opacity: .5;
+    }
+  }
+  button,
+  select,
+  textarea,
+  input[type=text],
+  input[type=date],
+  input[type=search] {
+    padding: .3rem;
+    border: 1px solid @silver;
+    &:hover {
+      border-color: @black;
+    }
+    &:focus {
+      outline: none;
+      border-color: @gray;
+    }
+  }
+  input[type=checkbox] {
+    &:focus {
+      outline: 1px solid @gray;
+    }
+  }
+  button > svg + span,
+  button > span + svg,
+  input[type=checkbox] + span {
+    margin-left: .33rem;
+  }
+  > fieldset {
+    border: 0;
+    label {
+      display: block;
+      span {
+        display: inline-block;
+        width: 10em;
+      }
+      + label { margin-top: .5rem;  }
+    }
+  }
+  div[role=dialog] {
+    fieldset {
+      border: none;
+      min-width: 420px;
+      > div {
+        display: flex;
+        label { width: 10rem; }
+        label + textarea,
+        label + input[type=text] { flex: 1 0 auto;  }
+        button + button { margin-left: .5rem; }
+        + div { margin-top: .5rem; }
+      }
+    }
+  }
+  label[role=search] {
+    position: relative;
+    input {
+      padding-left: 1.3rem;
+    }
+    svg {
+      left: .3rem;
+      position: absolute;
+    }
+  }
   > ul {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     grid-gap: .5rem;
     align-items: start;
+    > li {
+      margin-top: .5rem;
+      padding-top: .5rem;
+      border-top: 1px solid @silver;
+    }
+    h3 {
+      margin-bottom: .5rem;
+    }
+    ul li {
+      overflow: hidden;
+      span:first-child {
+        width: 75%;
+        white-space: nowrap;
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        + span { float: right; }
+      }
+      button {
+        border-color: transparent;
+        &:hover {
+          border-color: @silver;
+        }
+      }
+      + li {
+        margin-top: .3rem;
+      }
+    }
   }
 }

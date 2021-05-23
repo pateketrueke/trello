@@ -10,13 +10,12 @@
   }
 </script>
 
-<SvgIcon name="trash" />
-<SvgIcon name="plus" />
-<SvgIcon name="pencil" />
-
 {#if $loggedIn}
   <h2>Welcome {$session.fullname}</h2>
-  <button on:click={clearToken}>Log out</button>
+  <button on:click={clearToken}>
+    <span>Log out</span>
+    <SvgIcon name="logout" />
+  </button>
   <Boards on:selection={displayCards} />
   {#if boardId}
     <CardLists {boardId} />

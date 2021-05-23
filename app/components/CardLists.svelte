@@ -1,6 +1,7 @@
 <script>
   import { apiCall } from '../shared/utils';
   import MemberList from './MemberList.svelte';
+  import SvgIcon from './SvgIcon.svelte';
 
   export let boardId = null;
 
@@ -79,20 +80,26 @@
   {:then groups}
     {#each groups as list}
       <li>
-        <h3>{list.name}</h3>
+        <h3><SvgIcon name="directory" /> {list.name}</h3>
         <ul>
           {#each list.activities as task}
             <li>
               <span>{task.name}</span>
-              <br />
-              <button on:click={() => setTask(task)}>edit task</button>
-              <button on:click={() => rmTask(task, list.name)}>delete task</button>
+              <button on:click={() => setTask(task)}>
+                <SvgIcon name="edition" />
+              </button>
+              <button on:click={() => rmTask(task, list.name)}>
+                <SvgIcon name="trash" />
+              </button>
             </li>
           {:else}
             <li>No tasks were found</li>
           {/each}
         </ul>
-        <button on:click={() => addTask(list.id)}>add a new task</button>
+        <button on:click={() => addTask(list.id)}>
+          <SvgIcon name="document" />
+          <span>add a new task</span>
+        </button>
       </li>
     {:else}
       <li>No lists were found</li>
@@ -123,7 +130,10 @@
       <span>Members</span>
       <MemberList id="card-members" data={users} bind:value={card.members} />
     </label>
-    <button on:click={save} disabled={!isValid}>save task</button>
+    <button on:click={save} disabled={!isValid}>
+      <SvgIcon name="save" />
+      <span>save task</span>
+    </button>
     <button on:click={cancel}>cancel</button>
   {/if}
 {:catch e}

@@ -1,0 +1,21 @@
+{
+  "root": "build/",
+  "logging": {
+    "access": false,
+    "error": "warn"
+  },
+  "redirects": {
+    "/email": {
+      "url": "/email/",
+      "status": 302
+    }
+  },
+  "proxies": {
+    "/api/": {
+      "origin": "http://localhost:3001/api/v1"
+    },
+    "/email/": {
+      "origin": "http://localhost:1080"
+    }
+  }
+}

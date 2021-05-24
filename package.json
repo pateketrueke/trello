@@ -7,7 +7,7 @@
     "dev": "npm run build -- -w",
     "dist": "npm run build",
     "start": "node server.js",
-    "predev": "MAILOR_TASK=build npm run mailor",
+    "postbuild": "MAILOR_TASK=build npm run mailor",
     "check": "eslint *.js '{api,app}/**/*.{js,pug,svelte}'",
     "watch": "nodemon server.js --quiet --ignore cache.json --ignore build",
     "build": "mortero app -P/api:3001/api/v1/ -dcpublic:. -ecss.less -I.gitignore",

@@ -21,7 +21,7 @@
   }
 
   function rmBoard() {
-    if (!confirm('you sure?')) return; // eslint-disable-line
+    if (!confirm('Are you sure?')) return; // eslint-disable-line
     apiCall(`boards/${boardId}`, {
       method: 'DELETE',
     }).then(sync);
@@ -87,9 +87,7 @@
       <span>{e.message}</span>
     {/await}
   </label>
+  <h4>Add a new board</h4>
   <input type="text" bind:value={boardName} />
-  <button on:click={addBoard} disabled={!boardName}>
-    <SvgIcon name="add" />
-    <span>add a new board</span>
-  </button>
+  <button on:click={addBoard} disabled={!boardName}>Save board</button>
 {/if}

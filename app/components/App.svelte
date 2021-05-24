@@ -11,16 +11,20 @@
 </script>
 
 {#if $loggedIn}
-  <h2>Welcome {$session.fullname}</h2>
-  <button on:click={clearToken}>
-    <span>Log out</span>
-    <SvgIcon name="logout" />
-  </button>
-  <Boards on:selection={displayCards} />
+  <fieldset>
+    <h2>
+      Welcome {$session.fullname}
+      <button on:click={clearToken}>
+        <span>Log out</span>
+        <SvgIcon name="logout" />
+      </button>
+    </h2>
+    <Boards on:selection={displayCards} />
+  </fieldset>
   {#if boardId}
     <CardLists {boardId} />
   {/if}
 {:else}
-  <h2>Hello there</h2>
-  <a href="/api/login">log in</a>
+  <h2>Hello there,</h2>
+  Please <a href="/api/login">log in</a>.
 {/if}

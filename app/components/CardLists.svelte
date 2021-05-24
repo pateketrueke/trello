@@ -1,10 +1,12 @@
 <script>
+  import Fence from 'smoo/src/components/Fence.svelte';
+  import Search from 'smoo/src/components/Search.svelte';
   import { apiCall } from '../shared/utils';
-  import MemberList from './MemberList.svelte';
   import SvgIcon from './SvgIcon.svelte';
 
   export let boardId = null;
 
+  const keys = ['name', 'fullname'];
   const emptyCard = {
     name: '',
     description: '',
@@ -15,6 +17,7 @@
   let editing = false;
   let saving = false;
   let isValid = false;
+  let isOpen = false;
   let isNew = false;
   let users = [];
   let cards = null;
@@ -30,6 +33,7 @@
 
   function cancel() {
     card = { ...emptyCard };
+    isOpen = false;
     isNew = false;
     saving = null;
     editing = null;
@@ -51,7 +55,7 @@
   }
 
   function rmTask(taskInfo, listName) {
-    if (!confirm('you sure?')) return; // eslint-disable-line
+    if (!confirm('Are you sure?')) return; // eslint-disable-line
     apiCall(`cards/${taskInfo.id}`, {
       body: JSON.stringify({
         task: taskInfo,
@@ -63,12 +67,14 @@
 
   function setTask(taskInfo) {
     isNew = false;
+    isOpen = true;
     card = taskInfo;
     editing = taskInfo.id;
   }
 
   function addTask(listId) {
     isNew = true;
+    isOpen = true;
     editing = listId;
     card = { ...emptyCard };
   }
@@ -85,12 +91,14 @@
           {#each list.activities as task}
             <li>
               <span>{task.name}</span>
-              <button on:click={() => setTask(task)}>
-                <SvgIcon name="edition" />
-              </button>
-              <button on:click={() => rmTask(task, list.name)}>
-                <SvgIcon name="trash" />
-              </button>
+              <span>
+                <button on:click={() => setTask(task)}>
+                  <SvgIcon name="edition" />
+                </button>
+                <button on:click={() => rmTask(task, list.name)}>
+                  <SvgIcon name="trash" />
+                </button>
+              </span>
             </li>
           {:else}
             <li>No tasks were found</li>
@@ -98,7 +106,7 @@
         </ul>
         <button on:click={() => addTask(list.id)}>
           <SvgIcon name="document" />
-          <span>add a new task</span>
+          <span>Add a new task</span>
         </button>
       </li>
     {:else}
@@ -109,33 +117,38 @@
   {/await}
 </ul>
 
-{#await saving}
-  <span>Saving...</span>
-{:then}
-  {#if editing}
-    <label for="card-name">
-      <span>name</span>
-      <input id="card-name" type="text" bind:value={card.name} />
-    </label>
-    <label for="card-description">
-      <span>description</span>
-      <textarea id="card-description" bind:value={card.description}></textarea>
-    </label>
-    <label for="card-due-date">
-      <span>dueDate</span>
-      <input id="card-due-date" type="date" bind:value={card.dueDate} />
-    </label>
-    <br />
-    <label for="card-members">
-      <span>Members</span>
-      <MemberList id="card-members" data={users} bind:value={card.members} />
-    </label>
-    <button on:click={save} disabled={!isValid}>
-      <SvgIcon name="save" />
-      <span>save task</span>
-    </button>
-    <button on:click={cancel}>cancel</button>
-  {/if}
-{:catch e}
-  <span>{e.message}</span>
-{/await}
+<Fence modal autofocus bind:visible={isOpen} on:cancel={cancel} on:submit={save}>
+  <fieldset>
+    {#await saving}
+      <span>Saving...</span>
+    {:then}
+      {#if editing}
+        <h2>{isNew ? 'New task' : 'Editing task'}</h2>
+        <div>
+          <label for="card-name">Name or title</label>
+          <input id="card-name" type="text" bind:value={card.name} />
+        </div>
+        <div>
+          <label for="card-description">Description</label>
+          <textarea id="card-description" bind:value={card.description}></textarea>
+        </div>
+        <div>
+          <label for="card-due-date">Due date</label>
+          <input id="card-due-date" type="date" bind:value={card.dueDate} />
+        </div>
+        <div>
+          <label for="card-members">Assigned to</label>
+          <Search multiple id="card-members" {keys} data={users} bind:value={card.members}>
+            <SvgIcon slot="before" name="search" />
+          </Search>
+        </div>
+        <div>
+          <button type="submit" disabled={!isValid}>Save task</button>
+          <button type="button" on:click={cancel}>Cancel</button>
+        </div>
+      {/if}
+    {:catch e}
+      <span>{e.message}</span>
+    {/await}
+  </fieldset>
+</Fence>

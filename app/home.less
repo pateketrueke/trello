@@ -13,20 +13,19 @@ html {
 }
 #app {
   padding: 1rem;
-  *,
-  *::after,
-  *::before {
-    margin: 0;
-    padding: 0;
-    font-size: 1.05rem;
-  }
+  min-width: 320px;
   ul {
     list-style-type: none;
   }
+  h2 {
+    margin-bottom: .5rem;
+  }
   button {
     background-color: transparent;
-    cursor: pointer;
     transition: border-color .2s;
+    vertical-align: middle;
+    display: inline-flex;
+    align-items: center;
     &[disabled] svg {
       opacity: .5;
     }
@@ -63,17 +62,26 @@ html {
       display: block;
       span {
         display: inline-block;
-        width: 10em;
+        width: 9em;
       }
       + label { margin-top: .5rem;  }
     }
   }
   div[role=dialog] {
+    > .wrapper {
+      max-width: 100%;
+      @media screen and (max-width: 419px) {
+        width: 100%;
+      }
+    }
     fieldset {
       border: none;
-      min-width: 420px;
+      @media screen and (min-width: 420px) {
+        min-width: 420px;
+      }
       > div {
         display: flex;
+        flex-wrap: wrap;
         label { width: 10rem; }
         label + textarea,
         label + input[type=text] { flex: 1 0 auto;  }
@@ -83,19 +91,26 @@ html {
     }
   }
   label[role=search] {
-    position: relative;
-    input {
-      padding-left: 1.3rem;
-    }
     svg {
+      top: .3rem;
       left: .3rem;
-      position: absolute;
+      + input {
+        padding-left: 1.3rem;
+      }
+    }
+  }
+  div[role=listbox] {
+    ul {
+      padding: .3rem;
+    }
+    li + li {
+      margin-top: .3rem;
     }
   }
   > ul {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    grid-gap: .5rem;
+    grid-gap: 1rem;
     align-items: start;
     > li {
       margin-top: .5rem;

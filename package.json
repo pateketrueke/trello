@@ -41,10 +41,10 @@
   },
   "homepage": "https://github.com/pateketrueke/trello#readme",
   "dependencies": {
-    "@grown/conn": "^0.0.31",
-    "@grown/router": "^0.0.11",
+    "@grown/conn": "^0.0.32",
+    "@grown/router": "^0.0.12",
     "@grown/session": "0.0.17",
-    "grown": "^1.1.40",
+    "grown": "^1.1.46",
     "mailor": "^0.3.5"
   },
   "devDependencies": {
@@ -56,10 +56,14 @@
     "eslint-utils": ">=1.4.1",
     "less": "^4.1.1",
     "less-plugin-autoprefix": "^2.0.0",
-    "mortero": "^0.0.22",
+    "mortero": "^0.0.38",
     "nodemon": "^2.0.7",
     "pug": "^3.0.2",
-    "smoo": "^0.0.3",
-    "svelte": "^3.38.2"
+    "smoo": "^0.0.14",
+    "svelte": "^3.38.2",
+    "socket.io": ">=2.4.0",
+    "xmlhttprequest-ssl": ">=1.6.2",
+    "normalize-url": ">=4.5.1",
+    "ws": ">=7.4.6"
   }
 }

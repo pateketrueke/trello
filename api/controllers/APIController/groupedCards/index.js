@@ -7,7 +7,7 @@ module.exports = ({ API }) => async function groupedCards(ctx) {
   if (ctx.session.profile) {
     const members = await API(ctx, `boards/${ctx.path_params.board_id}/members`);
     const cards = await API(ctx, `boards/${ctx.path_params.board_id}/cards`);
-    const lists = await API(ctx, `boards/${ctx.path_params.board_id}/lists`);
+    const lists = await API(ctx, `boards/${ctx.path_params.board_id}/lists`, null, []);
     const groups = lists.reduce((memo, list) => {
       memo[list.id] = {
         id: list.id,

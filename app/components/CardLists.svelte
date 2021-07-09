@@ -1,6 +1,5 @@
 <script>
-  import Fence from 'smoo/src/components/Fence.svelte';
-  import Search from 'smoo/src/components/Search.svelte';
+  import { Fence, Search } from 'smoo';
   import { apiCall } from '../shared/utils';
   import SvgIcon from './SvgIcon.svelte';
 

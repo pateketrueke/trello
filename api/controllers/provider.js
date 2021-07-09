@@ -8,13 +8,18 @@ const mailer = Mailor.buildMailer(path.resolve(__dirname, '../../build/mails'), 
   maildev: ['test', 'development'].includes(process.env.NODE_ENV) || process.env.MAILDEV === 'YES',
 });
 
-async function api(ctx, route, options) {
+async function api(ctx, route, options, fallback) {
   const token = ctx.req_headers['x-auth-token'];
   const opts = `key=${process.env.TRELLO_API_KEY}&token=${token}`;
 
   let data;
   try {
     data = await ctx.get_json(`${apiURL}/1/${route}/?${opts}`, options);
+
+    if (data.error) {
+      if (!fallback) throw new Error(data.result);
+      data = fallback;
+    }
   } catch (e) {
     ctx.resp_body = e.stack;
   }

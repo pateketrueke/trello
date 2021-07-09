@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/pateketrueke/trello#readme",
   "dependencies": {
-    "@grown/conn": "^0.0.32",
+    "@grown/conn": "^0.0.33",
     "@grown/router": "^0.0.12",
     "@grown/session": "0.0.17",
     "grown": "^1.1.46",
@@ -60,10 +60,6 @@
     "nodemon": "^2.0.7",
     "pug": "^3.0.2",
     "smoo": "^0.0.14",
-    "svelte": "^3.38.2",
-    "socket.io": ">=2.4.0",
-    "xmlhttprequest-ssl": ">=1.6.2",
-    "normalize-url": ">=4.5.1",
-    "ws": ">=7.4.6"
+    "svelte": "^3.38.2"
   }
 }
